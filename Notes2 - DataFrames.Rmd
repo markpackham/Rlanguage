@@ -262,10 +262,6 @@ artists <- artists %>%
 head(artists)
 ```
 
-
-
-
-
 # Summary
 # load data from a CSV into a data frame
 # inspect the data frame with head() and summary()
