@@ -119,3 +119,157 @@ df_cols_removed <- artists %>%
   select(-genre,-spotify_monthly_listeners,-year_founded)
 df_cols_removed
 ```
+
+
+# Filter results like Where clause
+---
+title: "Introduction to Data Frames in R"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries
+library(readr)
+library(dplyr)
+```
+
+```{r message=FALSE}
+# load data frame
+artists <- read_csv('artists.csv')
+```
+
+```{r}
+# filter rows one condition
+rock_groups <- artists %>%
+  filter(genre == 'Rock')
+rock_groups
+```
+
+```{r}
+# filter rows multiple conditions
+popular_rock_groups <- artists %>%
+  filter(genre == 'Rock', spotify_monthly_listeners > 20000000)
+popular_rock_groups
+```
+
+
+# Filter using Not and Or
+---
+title: "Introduction to Data Frames in R"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries
+library(readr)
+library(dplyr)
+```
+
+```{r message=FALSE}
+# load data frame
+artists <- read_csv('artists.csv')
+```
+
+```{r}
+# filter rows with or
+korea_or_before_2000 <- artists %>% 
+  filter(country == 'South Korea' | year_founded < 2000)
+korea_or_before_2000
+```
+
+```{r}
+# filter rows with not !
+not_rock_groups <- artists %>% 
+  filter(!(genre == 'Rock'))
+not_rock_groups
+```
+
+# Order rows
+---
+title: "Introduction to Data Frames in R"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries
+library(readr)
+library(dplyr)
+```
+
+```{r message=FALSE}
+# load data frame
+artists <- read_csv('artists.csv')
+```
+
+```{r}
+# arrange rows in ascending order
+group_asc <- artists %>%
+  arrange(group)
+group_asc
+```
+
+```{r}
+# arrange rows in descending order
+youtube_desc <- artists %>%
+  arrange(desc(youtube_subscribers) )
+youtube_desc
+```
+
+# Full tasks example 
+---
+title: "Introduction to Data Frames in R"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries
+library(readr)
+library(dplyr)
+```
+
+```{r message=FALSE}
+# load data frame
+artists <- read_csv('artists.csv')
+```
+
+```{r}
+# select columns
+chosen_cols <- artists %>% 
+  select(-country,-year_founded,-albums)
+head(chosen_cols)
+```
+
+```{r}
+# filter rows
+popular_not_hip_hop <- chosen_cols %>% 
+  filter(spotify_monthly_listeners > 20000000, genre != 'Hip Hop') 
+head(popular_not_hip_hop)
+```
+
+```{r}
+# arrange rows
+youtube_desc <- popular_not_hip_hop %>% 
+  arrange(desc(youtube_subscribers))
+head(youtube_desc)
+```
+
+```{r}
+# select columns, filter and arrange rows
+artists <- artists %>% 
+  select(-country,-year_founded,-albums) %>% 
+  filter(spotify_monthly_listeners > 20000000, genre != 'Hip Hop') %>% 
+  arrange(desc(youtube_subscribers))
+head(artists)
+```
+
+
+
+
+
+# Summary
+# load data from a CSV into a data frame
+# inspect the data frame with head() and summary()
+# select() the columns you want to analyze
+# filter() the rows with comparison and logical operators
+# arrange() rows in ascending or descending order
+# You’ve also been exposed to the pipe %>%, a powerful tool for chaining function calls, as well as the general principles of data manipulation.
