@@ -1,0 +1,6 @@
+LoopingArraysStringBuilder/.vs/LoopingArraysStringBuilder/v15/Server/sqlite3/
+# IDE #
+##########
+.idea
+.vscode
+.vs/
