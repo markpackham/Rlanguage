@@ -1,150 +1,121 @@
-# class(2) # numeric
-# class('hello') # character
-# class('23') #character
-# class (FALSE) #logical
-# class(NA) #logical
-
+# Read CSV
 ---
-title: "Introduction to R Syntax"
+title: "Introduction to Data Frames in R"
 output: html_notebook
 ---
-```{r}
-print('Mark')
-print(1000)
-print('1000')
 
-```
-
-# Variables
-
----
-title: "Introduction to R Syntax"
-output: html_notebook
----
-```{r}
-name <- "Mark"
-age <- 9090
-```
-
-
-# Vectors (yeah it's really arrays)
-
-# You can check the type of elements in a vector by using typeof(vector_name)
-# You can check the length of a vector by using length(vector_name)
-# if we wanted to access the second element we would write: vector_name[2]
-
----
-title: "Introduction to R Syntax"
-output: html_notebook
----
-```{r}
-# We created this vector by separating 3 character strings with a comma and wrapping them inside c().
-phone <- c(123,345,6789)
-```
-
-
-# Conditionals (control flow)
----
-title: "Introduction to R Syntax"
-output: html_notebook
----
-```{r}
-message <- 'I change based on a condition.'
-if (TRUE) {
-   message <- 'I execute this when true!'
-} else {
-   message <- 'I execute this when false!'
-}
-
-print(message)
-```
-
-# Comparison operators
-# Less than: <
-# Greater than: >
-# Less than or equal to: <=
-# Greater than or equal to: >=
-# Is equal to: ==
-# Is NOT equal to: !=
-
-
-# Logical operators
-# the and operator (&)
-# the or operator (|)
----
-title: "Introduction to R Syntax"
-output: html_notebook
----
-```{r}
-
-message <- 'Should I pack an umbrella?'
-weather <- 'cloudy'
-high_chance_of_rain <- TRUE
-
-
-if (weather == 'cloudy' & high_chance_of_rain) {
-  message <- "Pack umbrella!"
-} else {
-  message <- "No need for umbrella!"
-}
-
-print(message)
-
-```
-
-
-# Function calling
----
-title: "Introduction to R Syntax"
-output: html_notebook
----
-```{r}
-data <- c(120,22,22,31,15,120)
-
-unique_vals <- unique(data)
-print(unique_vals)
-solution <- sqrt(49)
-print(solution)
-
-round_down <- floor(3.14)
-round_up <- ceiling(3.14)
-print(round_up)
-print(round_down)
-```
-
-
-# Importing Packages
----
-title: "Introduction to R Syntax"
-output: html_notebook
----
-```{r}
+```{r message=FALSE, warning=FALSE}
 # load libraries
 library(readr)
 library(dplyr)
 ```
+
 ```{r}
 # load data frame
 artists <- read_csv('artists.csv')
+artists
 ```
+
+# Write from Dataframe to CSV
+# write_csv(artists,'new_csv_file.csv')
+
+
+# Head for row numbers & Summary for row stats
+---
+title: "Introduction to Data Frames in R"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries
+library(readr)
+library(dplyr)
+```
+
+```{r message=FALSE}
+# load data frame
+artists <- read_csv('artists.csv')
+```
+
 ```{r}
 # inspect data frame
-artists
 head(artists)
 summary(artists)
 ```
-```{r}
-artists %>%
-  select(-country,-year_founded,-albums) %>%
-  filter(spotify_monthly_listeners > 20000000, genre != 'Hip Hop') %>%
-  arrange(desc(youtube_subscribers))
+
+# Piping
+# Pipe operator, or %>%, helps increase the readability of data frame code by piping the value on its left into the first argument 
+# of the function that follows it. For example:
+
+# easier to read than
+df %>% 
+  head()
+
+# this
+head(df)
+
+
+
+# Select example (just like SQL select)
+
+---
+title: "Introduction to Data Frames in R"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries
+library(readr)
+library(dplyr)
 ```
 
-# Summary
-# R is a powerful statistical programming language with a large community of data enthusiasts.
-# You can calculate arithmetic with R and it will follow the normal order of operations
-# Data types allow us to classify different pieces of information.
-# You can store that information inside of variables
-# You can use conditional statements and operators to introduce logic to your code
-# You can call a function in R by using the () and passing in the correct arguments
-# R programmers have published lots of useful packages that specialize in different tasks
+```{r message=FALSE}
+# load data frame
+artists <- read_csv('artists.csv')
+```
+
+```{r}
+# select one column
+artist_groups <- artists %>%
+  select(group)
+artist_groups
+```
+
+```{r}
+# select multiple columns
+group_info <- artists %>%
+  select(group,spotify_monthly_listeners,year_founded)
+group_info
+```
+
+
+# Select All Columns except some
+---
+title: "Introduction to Data Frames in R"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries
+library(readr)
+library(dplyr)
+```
+
+```{r message=FALSE}
+# load data frame
+artists <- read_csv('artists.csv')
+```
+
+```{r}
+# select all columns except one
+no_albums <- artists %>% 
+  select(-albums)
+no_albums
+```
+
+```{r}
+# select all columns except a set
+df_cols_removed <- artists %>% 
+  select(-genre,-spotify_monthly_listeners,-year_founded)
+df_cols_removed
+```
