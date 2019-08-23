@@ -1,0 +1,190 @@
+# Add Column using mutate
+# mutate() takes a name-value pair as an argument. 
+# The name will be the name of the new column you are adding, and the value is an expression defining the values 
+# of the new column in terms of the existing columns mutate() returns a new data frame with the added column.
+
+---
+title: "Modifying Data Frames in R"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries
+library(readr)
+library(dplyr)
+```
+
+```{r message=FALSE}
+# load data frame
+dogs <- read_csv('dogs.csv')
+```
+
+```{r}
+# inspect data frame
+head(dogs)
+```
+
+```{r}
+# add average height column
+dogs <- dogs %>%
+  mutate(avg_height = (height_low_inches + height_high_inches)/2)
+head(dogs)
+```
+
+
+# Add Multiple Columns 
+---
+title: "Modifying Data Frames in R"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries
+library(readr)
+library(dplyr)
+```
+
+```{r message=FALSE}
+# load data frame
+dogs <- read_csv('dogs.csv')
+```
+
+```{r}
+# inspect data frame
+head(dogs)
+```
+
+```{r}
+# add average height, average weight and rank change columns
+dogs <- dogs %>%
+  mutate(avg_height = (height_low_inches + height_high_inches)/2,
+         avg_weight = (weight_low_lbs + weight_high_lbs)/2,
+        rank_change_13_to_16 = rank_2016 - rank_2013)
+head(dogs)
+```
+
+
+# Transmute Columns (add new columns while dropping the existing columns that may no longer be useful for your analysis.)
+# Like mutate(), transmute() takes name-value pairs as arguments. 
+# The names will be the names of the new columns you are adding, and the values are expressions defining the 
+# values of the new columns. The difference, however, is that transmute() returns a data frame 
+# with only the new columns.
+---
+title: "Modifying Data Frames in R"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries
+library(readr)
+library(dplyr)
+```
+
+```{r message=FALSE}
+# load data frame
+dogs <- read_csv('dogs.csv')
+```
+
+```{r}
+# inspect data frame
+head(dogs)
+```
+
+```{r}
+# update the function call to drop all existing columns
+dogs <- dogs %>%
+  transmute(breed = breed,
+            avg_height = (height_low_inches + height_high_inches)/2,
+         avg_weight = (weight_low_lbs + weight_high_lbs)/2,
+        rank_change_13_to_16 = rank_2016 - rank_2013)
+head(dogs)
+```
+
+
+# Rename Columns
+# rename() can take any number of arguments, where each new column name is assigned to 
+# replace an old column name in the format new_column_name = old_column_name. rename() returns a new data frame with the updated column names.
+---
+title: "Modifying Data Frames in R"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries
+library(readr)
+library(dplyr)
+```
+
+```{r message=FALSE}
+# load data frame
+dogs <- read_csv('dogs.csv')
+```
+
+```{r message=FALSE}
+# add columns and remove existing columns
+dogs <- dogs %>%
+  transmute(breed = breed,
+            avg_height = (height_low_inches + height_high_inches)/2,
+         avg_weight = (weight_low_lbs + weight_high_lbs)/2,
+        rank_change_13_to_16 = rank_2016 - rank_2013)
+```
+
+```{r}
+# check column names
+original_col_names <- colnames(dogs)
+original_col_names
+```
+
+```{r}
+# rename data frame columns
+dogs <- dogs %>%
+  rename(avg_height_inches = avg_height,
+         avg_weight_lbs = avg_weight,
+         popularity_change_13_to_16 = rank_change_13_to_16)
+```
+
+```{r}
+# check column names
+new_col_names <- colnames(dogs)
+new_col_names
+```
+
+
+# Add new columns, drop existing columns and arrange
+---
+title: "Modifying Data Frames in R"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries
+library(readr)
+library(dplyr)
+```
+
+```{r message=FALSE}
+# load data frame
+dogs <- read_csv('dogs.csv')
+```
+
+```{r}
+# inspect data frame
+head(dogs)
+```
+
+```{r}
+# add new columns, drop existing columns and arrange
+dogs <- dogs %>%
+  transmute(breed = breed,
+            height_average_feet = ((height_low_inches + height_high_inches)/2)/12,
+            popularity_change_15_to_16 = rank_2016 - rank_2015) %>% 
+  arrange(desc(popularity_change_15_to_16))
+head(dogs)
+```
+
+
+
+# Summary
+# add new columns to a data frame using mutate()
+# add new columns to a data frame and drop existing columns using transmute()
+# change the column names of a data frame using rename()
