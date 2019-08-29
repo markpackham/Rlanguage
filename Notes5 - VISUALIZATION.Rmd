@@ -1,0 +1,280 @@
+# For data to be tidy, it must have:
+# Each variable as a separate column
+# Each row as a separate observation
+
+# head() — display the first 6 rows of the table
+# summary() — display the summary statistics of the table
+# colnames() — display the column names of the table
+
+
+# Handling multiple files
+---
+title: "Data Cleaning in R"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries
+library(readr)
+library(dplyr)
+```
+
+```{r}
+# list files
+student_files <- list.files(pattern = 'exams_.*csv')
+print(student_files)
+```
+
+```{r message=FALSE}
+# read files
+# read each file in files into a data frame with read_csv(), storing the data frames in df_list
+df_list <- lapply(student_files,read_csv)
+```
+
+```{r}
+# concatenate data frames
+students <- bind_rows(df_list)
+students
+```
+
+```{r}
+# number of rows in students
+nrow_students <- nrow(students)
+print(nrow_students)
+```
+
+
+# Reshape Data
+# gather() takes a data frame and the columns to unpack
+---
+title: "Data Cleaning in R"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries
+library(dplyr)
+library(tidyr)
+```
+
+```{r}
+# load students data frame
+load("students.Rda")
+```
+
+```{r}
+# original column names
+original_col_names <- colnames(students)
+print(original_col_names)
+```
+
+```{r}
+# gather columns
+students <- students %>%
+  gather('fractions','probability',key='exam', value='score')
+head(students)
+```
+
+```{r}
+# updated column names
+gathered_col_names <- colnames(students)
+print(gathered_col_names)
+```
+
+```{r}
+# unique value counts of exam
+exam_counts <- students %>%
+  count(exam)
+exam_counts
+```
+
+
+# Duplicated data
+# To check for duplicates, we can use the base R function duplicated(), 
+# which will return a logical vector telling us which rows are duplicate rows.
+
+---
+title: "Data Cleaning in R"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries
+library(dplyr)
+library(tidyr)
+```
+
+```{r}
+# load students data frame
+load("students.Rda")
+```
+
+```{r}
+# drop id column
+students <- students %>%
+  select(-id)
+head(students)
+```
+
+```{r}
+# find and count duplicated rows
+duplicates <- students %>%
+  duplicated() %>%
+  table()
+duplicates
+```
+
+```{r}
+# remove duplicated rows
+students <- students %>%
+  distinct()
+```
+
+```{r}
+# find and count duplicated rows in updated data frame
+updated_duplicates <- students %>%
+  duplicated() %>%
+  table()
+updated_duplicates
+```
+
+
+# Substrings str_sub()
+---
+title: "Data Cleaning in R"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries
+library(dplyr)
+library(stringr)
+```
+
+```{r}
+# load students data frame
+load("students.Rda")
+```
+
+```{r}
+# print columns of students
+print(colnames(students))
+```
+
+```{r}
+# view head of students
+head(students)
+```
+
+```{r}
+# add gender and age columns
+students <- students %>%
+  mutate(gender = str_sub(gender_age,1,1),
+         age = str_sub(gender_age,2))
+head(students)
+```
+
+```{r}
+# drop gender_age column
+students <- students %>%
+  select(-gender_age)
+head(students)
+```
+
+
+# Split on specific characters using separate()
+---
+title: "Data Cleaning in R"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries
+library(dplyr)
+library(tidyr)
+```
+
+```{r}
+# load students data frame
+load("students.Rda")
+```
+
+```{r}
+# view the head of students
+head(students)
+```
+
+```{r}
+# separate the full_name column in first_name and last_name using a space as the focus of seperation
+students <- students %>%
+  separate(full_name,c('first_name','last_name'),' ',extra ='merge')
+head(students)
+```
+
+
+# Internal structure of an R object
+# str() displays the internal structure of an R object. 
+# Calling str() with a data frame as an argument will return a variety of information, including the data types.
+---
+title: "Data Cleaning in R"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries
+library(dplyr)
+```
+
+```{r}
+# load students data frame
+load("students.Rda")
+```
+
+```{r}
+# print structure of students
+print(str(students))
+```
+
+```{r}
+# mean of age column
+students %>% 
+  summarise(mean_age = mean(age))
+```
+
+
+# String Parsing
+# gsub() can use regular expressions
+# as.numeric() can convert character strings containing numerical values to numeric
+---
+title: "Data Cleaning in R"
+output: html_notebook
+---
+
+```{r message=FALSE, warning=FALSE}
+# load libraries
+library(dplyr)
+```
+
+```{r}
+# load students data frame
+load("students.Rda")
+```
+
+```{r}
+# view head of students
+head(students)
+```
+
+```{r}
+# remove % from score column
+students <- students %>%
+  mutate(score=gsub('\\%','',score))
+head(students)
+```
+
+```{r}
+# change score column to numeric
+students <- students %>%
+  mutate(score=as.numeric(score))
+head(students)
+```
